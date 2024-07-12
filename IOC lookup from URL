@@ -1,0 +1,24 @@
+let ioc_ips = externaldata(IP:string) [@"https://raw.githubusercontent.com/sudostar12/KQL/0bca1022b7d28b1c6464fadb55a2c5c58b0c8845/AitM%20IOCs"] with (format="csv", ignoreFirstRecord=False);
+(union isfuzzy=true
+(SigninLogs
+| extend SourceTable = "SigninLogs", Username = Identity
+| where IPAddress in (ioc_ips)
+),
+(OfficeActivity
+| extend SourceTable = "OfficeActivity", IPAddress = ClientIP, UserPrincipalName = UserId
+| where ClientIP in (ioc_ips)
+),
+(AADNonInteractiveUserSignInLogs
+| extend SourceTable = "AADNonInteractiveUserSignInLogs", Username = Identity
+| where IPAddress in (ioc_ips)
+),
+(AADUserRiskEvents
+| extend SourceTable = "AADUserRiskEvents", Username = UserDisplayName, IPAddress = IpAddress
+| where IpAddress in (ioc_ips)
+),
+(ADFSSignInLogs
+| extend SourceTable = "ADFSSignInLogs", Username = Identity
+| where IPAddress in (ioc_ips)
+)
+)
+|project TimeGenerated, IPAddress, Username, UserPrincipalName, SourceTable
