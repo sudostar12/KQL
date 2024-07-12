@@ -1,4 +1,4 @@
-let ioc_ips = externaldata(IP:string) [@"https://raw.githubusercontent.com/sudostar12/KQL/0bca1022b7d28b1c6464fadb55a2c5c58b0c8845/AitM%20IOCs"] with (format="csv", ignoreFirstRecord=False);
+let ioc_ips = externaldata(IP:string) [@"https://raw.githubusercontent.com/sudostar12/KQL/main/AitM%20IOCs%20-%20IPs"] with (format="csv", ignoreFirstRecord=False);
 (union isfuzzy=true
 (SigninLogs
 | extend SourceTable = "SigninLogs", Username = Identity
